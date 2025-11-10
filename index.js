@@ -1,32 +1,41 @@
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+require("dotenv").config();
 
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-// require('dotenv').config();
+
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-// --- Middlewares ---
-app.use(cors({
-    origin: ['http://localhost:5173', 'YOUR_NETLIFY_CLIENT_URL'], // Add your final Netlify domain here
-    credentials: true,
-}));
+// middleware
+app.use(cors());
 app.use(express.json());
 
+// MongoDB Connection
+// mongo pass=> 9imWxq2CQyrsPc28
+const uri = "mongodb+srv://gariwala-taoshifPH:9imWxq2CQyrsPc28@cluster0.kpmcxd4.mongodb.net/?appName=Cluster0";
 
-// --- Database Connection ---
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log("MongoDB connected successfully!"))
-    .catch(err => console.error("MongoDB connection error:", err));
-
-// --- Basic Routes ---
-app.get('/', (req, res) => {
-    res.send('GariWala Server is Running!');
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
 });
 
-// --- TODO: API Routes (Car Routes, Booking Routes, Auth Routes) will go here ---
-
-app.listen(port, () => {
-    console.log(`Gariwala Server listening on port ${port}`);
+// main route
+app.get("/", (req, res) => {
+  res.send(`🚗 GARIWALA server running on port ${port}`);
 });
+
+// database connection
+async function run() {
+
+}
+
+run().catch(console.dir);
+
+app.listen(port, () => console.log(`🚀 GARIWALA Server running at port ${port}`));

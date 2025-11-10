@@ -10,11 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "firebase-admin": "^13.6.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0",
     "mongoose": "^8.19.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Taoshif1/PH-A10-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Taoshif1/PH-A10-Server/issues"
+  },
+  "homepage": "https://github.com/Taoshif1/PH-A10-Server#readme"
 }
