@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/Taoshif1/PH-A10-Server/issues"
   },
-  "homepage": "https://github.com/Taoshif1/PH-A10-Server#readme"
+  "homepage": "https://github.com/Taoshif1/PH-A10-Server#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
