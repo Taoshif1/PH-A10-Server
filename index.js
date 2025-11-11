@@ -21,24 +21,27 @@ const client = new MongoClient(uri, {
   },
 });
 
-// Connect to MongoDB
+// Database collections
 let db;
 let carsCollection;
 let bookingsCollection;
 
-async function connectDB() {
-  try {
-    await client.connect();
-    db = client.db("gariwalaDB");
-    carsCollection = db.collection("cars");
-    bookingsCollection = db.collection("bookings");
-    console.log("✅ MongoDB Connected Successfully!");
-  } catch (error) {
-    console.error("❌ MongoDB Connection Error:", error);
+// Connect to MongoDB (with connection reuse for serverless)
+async function connectToDatabase() {
+  if (!db) {
+    try {
+      await client.connect();
+      db = client.db("gariwalaDB");
+      carsCollection = db.collection("cars");
+      bookingsCollection = db.collection("bookings");
+      console.log("✅ MongoDB Connected Successfully!");
+    } catch (error) {
+      console.error("❌ MongoDB Connection Error:", error);
+      throw error;
+    }
   }
+  return { db, carsCollection, bookingsCollection };
 }
-
-connectDB();
 
 // ========================================
 // 🏠 ROOT ROUTE
@@ -68,6 +71,8 @@ app.get("/", (req, res) => {
 // Get ALL cars
 app.get("/cars", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const { search, category, sort } = req.query;
     let query = {};
 
@@ -107,6 +112,8 @@ app.get("/cars", async (req, res) => {
 // Get FEATURED cars (6 newest)
 app.get("/cars/featured", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const cars = await carsCollection
       .find()
       .sort({ createdAt: -1 })
@@ -131,6 +138,8 @@ app.get("/cars/featured", async (req, res) => {
 // Get cars by USER email (My Listings)
 app.get("/cars/user/:email", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const { email } = req.params;
     const cars = await carsCollection
       .find({ providerEmail: email })
@@ -155,6 +164,8 @@ app.get("/cars/user/:email", async (req, res) => {
 // Get SINGLE car by ID
 app.get("/cars/:id", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
@@ -190,6 +201,8 @@ app.get("/cars/:id", async (req, res) => {
 // ADD new car (POST)
 app.post("/cars", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const newCar = {
       ...req.body,
       status: "available",
@@ -217,6 +230,8 @@ app.post("/cars", async (req, res) => {
 // UPDATE car by ID (PUT)
 app.put("/cars/:id", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
@@ -266,6 +281,8 @@ app.put("/cars/:id", async (req, res) => {
 // DELETE car by ID (DELETE)
 app.delete("/cars/:id", async (req, res) => {
   try {
+    const { carsCollection } = await connectToDatabase();
+    
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
@@ -305,6 +322,8 @@ app.delete("/cars/:id", async (req, res) => {
 // Get user bookings
 app.get("/bookings/user/:email", async (req, res) => {
   try {
+    const { bookingsCollection } = await connectToDatabase();
+    
     const { email } = req.params;
     const bookings = await bookingsCollection
       .find({ userEmail: email })
@@ -329,6 +348,8 @@ app.get("/bookings/user/:email", async (req, res) => {
 // Create booking (POST)
 app.post("/bookings", async (req, res) => {
   try {
+    const { carsCollection, bookingsCollection } = await connectToDatabase();
+    
     const { carId } = req.body;
 
     // Check if car exists and is available
@@ -384,6 +405,8 @@ app.post("/bookings", async (req, res) => {
 // Cancel/Delete booking
 app.delete("/bookings/:id", async (req, res) => {
   try {
+    const { carsCollection, bookingsCollection } = await connectToDatabase();
+    
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
