@@ -6,6 +6,14 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+// ✅ Allow frontend requests (localhost + netlify)
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://gariwala.netlify.app"],
+    credentials: true,
+  })
+);
+
 // Middleware
 app.use(cors());
 app.use(express.json());
