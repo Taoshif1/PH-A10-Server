@@ -385,8 +385,6 @@ POST /cars
 - `rating`: 4.5
 - `createdAt`: Current timestamp
 
-```
-
 ---
 
 ### 6. Update Car
